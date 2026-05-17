@@ -1,0 +1,90 @@
+rpg2000_ogg_hooker 配布注意書き
+
+対象:
+
+- RPG2000_ogg_hooker.exe
+- rpg2k_ogg_hook.dll
+- src/hooker/*
+- rpg2000_ogg_hooker 用に作成された docs
+
+rpg2000_ogg_hooker のソースコード自体は、この repository の `LICENSE`
+に記載された MIT License で提供されます。
+
+この文書は、RPG Maker 2000 / RPGツクール2000 の editor と一緒に使う場合の
+配布注意書きです。Gotcha Gotcha Games Inc. 製品、RPG Maker 2000、
+RPG2000.exe、RPG_RT.exe、RTP、サンプルゲーム、ツクール素材を配布・改変する
+権利を与えるものではありません。
+
+rpg2000_ogg_hooker は、RPG Maker 2000 / RPGツクール2000 用の RPG2000.exe editor
+を対象にしています。RPG Maker 2003 および他の RPG Maker editor / runtime は対象外です。
+
+この文書は法的助言ではありません。公開配布する場合は、配布者自身が最新の公式規約を
+確認してください。
+
+
+1. RPG Maker 2000 / GGG との関係
+
+rpg2000_ogg_hooker は非公式の editor 補助ツールです。Gotcha Gotcha Games Inc.
+が制作・承認・保証・サポート・配布する公式製品ではありません。
+
+RPG Maker および RPGツクールは、Gotcha Gotcha Games Inc. の登録商標または商標です。
+
+公式規約:
+
+  https://rpgmakerofficial.com/support/rule/
+
+RPGツクール2000 について、公式規約に掲載されている製品別著作権表記は
+次のとおりです。
+
+  RPGツクール2000（VALUE!版も含む）
+  (C) 2000, 2003, 2012 Gotcha Gotcha Games Inc./YOJI OJIMA
+
+
+2. この hooker が行うこと
+
+rpg2000_ogg_hooker は、同じフォルダに存在する正規の RPG2000.exe を起動し、
+実行中の process に rpg2k_ogg_hook.dll を注入します。その上で、editor が認識できない
+Music / Sound 配下の `.ogg` 素材を、存在しない `.wav` 素材として見せ、一時 WAV へ
+変換して読み込ませます。
+
+rpg2000_ogg_hooker は RPG2000.exe を disk 上で書き換えない設計です。また、この
+hooker 自体は RPG2000.exe、RPG_RT.exe、RTP、RPG Maker editor、GGG 公式素材を含みません。
+
+
+3. 使用・再配布時の注意
+
+rpg2000_ogg_hooker を使用または再配布する場合は、少なくとも次の点に注意してください。
+
+1. このツールを GGG 公式製品、公式 update、公式 editor と表示しないこと。
+2. この文書を hooker と一緒に配布すること。
+3. 製品認証、購入条件、DRM、その他の access control を回避する目的で使わないこと。
+4. RPG2000.exe、RPG_RT.exe、RTP、公式素材、公式サンプルゲーム素材、その他 GGG 製品ファイルを、
+   GGG 公式規約で認められる範囲を超えて配布しないこと。
+5. GGG 製プログラムや素材の抽出・単独頒布・無断改変利用を許可するような説明をしないこと。
+6. GGG 公式規約とこの文書が矛盾する場合、GGG が権利を持つプログラム・素材・商標については
+   GGG 公式規約を優先すること。
+
+
+4. 配布時の推奨同梱物
+
+RPG2000.exe のある環境で使う場合の推奨構成:
+
+- RPG2000_ogg_hooker.exe
+- rpg2k_ogg_hook.dll
+- RPG2000_OGG_HOOKER_LICENSE.txt
+
+この文書は RPG2000.exe 単体配布の許可ではありません。RPG2000.exe を同梱する根拠は
+RPG Maker 2000 / GGG の公式配布条件に求めてください。rpg2000_ogg_hooker 側の文書だけでは
+正当化できません。
+
+ffmpeg.exe など外部プログラムを別途同梱する場合は、その外部プログラムのライセンスも
+別に同梱し、遵守してください。この project は ffmpeg.exe を標準では同梱していません。
+
+
+5. 無保証
+
+rpg2000_ogg_hooker は現状有姿で提供されます。特定の環境で必ず動作すること、
+すべての Windows 環境で安定すること、あらゆる配布形態で法的に問題がないことは保証されません。
+
+使用および配布は、配布者・利用者自身の責任で行ってください。
+
