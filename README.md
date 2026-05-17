@@ -17,7 +17,7 @@ RPG Maker 2000 / RPGツクール2000 と一緒に使う場合の注意は
 
 ## Releases
 
-https://github.com/tsuzukima/rpg_rt_container/releases
+https://github.com/tsuzukima/rpg2000_ogg_hooker/releases
 
 最新版はここから入手できます。
 
