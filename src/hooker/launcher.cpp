@@ -29,6 +29,42 @@ bool IsDiagnosticArg(const std::wstring& arg) {
   return arg == L"--diagnostic" || arg == L"--diag" || arg == L"/diagnostic" || arg == L"/diag";
 }
 
+// decoder chain を絞る test flag を解釈し、対応する env var 用 spec を返します。
+// stb-only / mf-only / ffmpeg-only / no-stb / no-mf / no-ffmpeg と、
+// 明示的な --decode-chain=<spec> 形式を受け付けます。
+bool TryParseDecodeChainArg(const std::wstring& arg, std::wstring* out_spec) {
+  struct Alias { const wchar_t* flag; const wchar_t* spec; };
+  static constexpr Alias kAliases[] = {
+      {L"--stb-only", L"stb"},        {L"--stbonly", L"stb"},
+      {L"/stb-only", L"stb"},         {L"/stbonly", L"stb"},
+      {L"--mf-only", L"mf"},          {L"--mfonly", L"mf"},
+      {L"/mf-only", L"mf"},           {L"/mfonly", L"mf"},
+      {L"--ffmpeg-only", L"ffmpeg"},  {L"--ffmpegonly", L"ffmpeg"},
+      {L"/ffmpeg-only", L"ffmpeg"},   {L"/ffmpegonly", L"ffmpeg"},
+      {L"--no-stb", L"mf,ffmpeg"},    {L"/no-stb", L"mf,ffmpeg"},
+      {L"--no-mf", L"stb,ffmpeg"},    {L"/no-mf", L"stb,ffmpeg"},
+      {L"--no-ffmpeg", L"stb,mf"},    {L"/no-ffmpeg", L"stb,mf"},
+  };
+  for (const auto& a : kAliases) {
+    if (arg == a.flag) {
+      if (out_spec) {
+        *out_spec = a.spec;
+      }
+      return true;
+    }
+  }
+  for (const wchar_t* prefix : {L"--decode-chain=", L"/decode-chain="}) {
+    const std::wstring p(prefix);
+    if (arg.size() >= p.size() && arg.compare(0, p.size(), p) == 0) {
+      if (out_spec) {
+        *out_spec = arg.substr(p.size());
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 void LogIfDiagnostic(const std::wstring& message) {
   if (g_diagnostics_enabled) {
     roh::Log(message);
@@ -159,10 +195,17 @@ int wmain(int argc, wchar_t** argv) {
   }
 
   std::vector<std::wstring> forward_args;
+  std::wstring decode_chain_spec;
   for (int i = 1; i < argc; ++i) {
     std::wstring arg = argv[i] ? argv[i] : L"";
     if (IsDiagnosticArg(arg)) {
       g_diagnostics_enabled = true;
+      continue;
+    }
+    std::wstring spec;
+    if (TryParseDecodeChainArg(arg, &spec)) {
+      // 複数指定の場合は最後の指定が勝ちます。`--decode-chain=` の値を直接使えます。
+      decode_chain_spec = spec;
       continue;
     }
     forward_args.push_back(arg);
@@ -173,11 +216,20 @@ int wmain(int argc, wchar_t** argv) {
   } else {
     SetEnvironmentVariableW(L"RPG2000_OGG_HOOKER_DIAGNOSTIC", nullptr);
   }
+  // decoder chain は test 目的の override です。空のときは default (全 stage) で動かします。
+  if (!decode_chain_spec.empty()) {
+    SetEnvironmentVariableW(L"RPG2000_OGG_HOOKER_DECODE_CHAIN", decode_chain_spec.c_str());
+  } else {
+    SetEnvironmentVariableW(L"RPG2000_OGG_HOOKER_DECODE_CHAIN", nullptr);
+  }
 
   const std::wstring preferred_log_path = roh::JoinPath(base_dir, L"rpg2000_ogg_hooker.log");
   if (g_diagnostics_enabled) {
     roh::InitLog(preferred_log_path);
     roh::Log(L"launcher start base_dir=\"" + base_dir + L"\"");
+    if (!decode_chain_spec.empty()) {
+      roh::Log(L"decode_chain override=\"" + decode_chain_spec + L"\"");
+    }
 
     WIN32_FILE_ATTRIBUTE_DATA log_probe{};
     const bool preferred_written =

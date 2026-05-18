@@ -364,7 +364,7 @@ bool EnsureTempWav(const std::wstring& requested_wav, const std::wstring& source
     return true;
   }
 
-  auto result = roh::DecodeOggToWavMediaFoundation(source_ogg, temp_wav);
+  auto result = roh::DecodeOggToWav(source_ogg, temp_wav);
   if (!result.ok) {
     roh::Log(L"audio_decode_failed requested_wav=\"" + requested_wav + L"\" source_ogg=\"" +
              source_ogg + L"\" temp_wav=\"" + temp_wav + L"\" decode_ms=" +

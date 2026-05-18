@@ -18,8 +18,13 @@ struct DecodeResult {
 };
 
 // OGG/Vorbis を一時 WAV に変換します。
-// まず Windows Media Foundation を試し、OS codec が無い場合は ffmpeg.exe へ fallback します。
-DecodeResult DecodeOggToWavMediaFoundation(const std::wstring& source_ogg,
-                                           const std::wstring& temp_wav);
+// 実装は 3 段:
+//   1. stb_vorbis 内蔵 decoder で stream decode (任意 Windows で常に動く primary path)
+//   2. Windows Media Foundation (Web Media Extensions が入っている Windows でのみ成功)
+//   3. tool 同梱 directory 経由 -> PATH 経由の ffmpeg.exe fallback
+// channel layout が 3ch 以上のときは stereo へ downmix します
+// (PCM WAV は channel mask 無しだと 3ch 以上が曖昧なため、再生互換を優先)。
+DecodeResult DecodeOggToWav(const std::wstring& source_ogg,
+                            const std::wstring& temp_wav);
 
 }  // namespace roh

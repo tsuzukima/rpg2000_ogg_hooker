@@ -19,5 +19,10 @@ Parts of the launcher structure, DLL injection flow, path/log helpers, and
 OGG-to-WAV decoder were adapted from the sibling project `RPG_RT_container`
 v0.1.0. The adapted code is also MIT licensed.
 
+This repository bundles `src/hooker/third_party/stb_vorbis.c` (v1.22) by
+Sean Barrett, distributed by the author under the public domain (or MIT,
+at the user's option). See the license block at the end of that file. The
+file is included as-is from https://github.com/nothings/stb .
+
 The source and documentation prepared for this repository were edited with
 assistance from GPT-5.5 and Opus 4.7.

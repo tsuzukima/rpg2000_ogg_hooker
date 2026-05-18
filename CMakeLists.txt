@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(rpg2000_ogg_hooker LANGUAGES CXX)
+project(rpg2000_ogg_hooker LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,6 +31,13 @@ target_link_options(RPG2000_ogg_hooker PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:wmainCR
 add_library(rpg2k_ogg_hook SHARED
   src/hooker/hook_dll.cpp
   src/hooker/mf_ogg_decoder.cpp
+  src/hooker/third_party/stb_vorbis.c
+)
+# stb_vorbis.c は upstream をそのまま同梱するため、binary を縮める NO_PUSHDATA_API と
+# upstream 由来の警告を抑える /W0 だけを per-file で適用します。
+set_source_files_properties(src/hooker/third_party/stb_vorbis.c PROPERTIES
+  COMPILE_DEFINITIONS "STB_VORBIS_NO_PUSHDATA_API"
+  COMPILE_OPTIONS "/W0"
 )
 target_link_libraries(rpg2k_ogg_hook PRIVATE roh_common mfplat mfreadwrite mfuuid)
 target_compile_definitions(rpg2k_ogg_hook PRIVATE UNICODE _UNICODE NOMINMAX WIN32_LEAN_AND_MEAN)
